@@ -14,10 +14,13 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import template.cqrs.domain.alert.queries.*;
-import template.cqrs.domain.alert.value_objects.AlertStatus;
-import template.cqrs.domain.alert.dto.AlertDto;
-import template.cqrs.domain.alert.dto.PagedAlertResponse;
+import template.cqrs.application.query.alert.FindAlertsByKeywordQuery;
+import template.cqrs.application.query.alert.FindAlertsByStatusQuery;
+import template.cqrs.application.query.alert.FindAlertsByTimestampRangeQuery;
+import template.cqrs.application.query.alert.FindAllAlertsQuery;
+import template.cqrs.domain.model.alert.value_objects.AlertStatus;
+import template.cqrs.shared.dto.alert.AlertDto;
+import template.cqrs.shared.dto.alert.PagedAlertResponse;
 
 import java.time.Instant;
 import java.util.UUID;
