@@ -33,7 +33,7 @@ public class AlertInputKafkaConsumer {
     // Consider using a DeadLetterPublishingRecoverer for more robust error handling
     @KafkaListener(
             topics = "${app.kafka.topic.alerts.input}",
-            groupId = "${spring.kafka.consumer.group-id}", // Ensure this matches application.properties
+            groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory" // Default, or specify if custom
     )
     public void receiveAlertMessage(@Payload IncomingAlertMessageDto message,

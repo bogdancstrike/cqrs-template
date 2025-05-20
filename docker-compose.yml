@@ -12,16 +12,15 @@ services:
     ports:
       - "7676:7676" # Host:Container (matches your app's server.port)
     environment:
-      - SPRING_PROFILES_ACTIVE=docker # Optional: for docker-specific configurations
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/dev
       - SPRING_DATASOURCE_USERNAME=dev
       - SPRING_DATASOURCE_PASSWORD=dev
-      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch-node:9200 # Use service name
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka-broker:29092 # Connect to Kafka's internal listener
+      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch-node:9200
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka-broker:29092
       - APP_KAFKA_TOPIC_ALERTS_INPUT=alerts-input-topic
       - APP_KAFKA_TOPIC_ALERTS_EVENTS=alerts-events-topic
       - AXON_KAFKA_DEFAULT_TOPIC=alerts-events-topic
-      # Ensure your application.properties uses these service names if not overridden here
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -68,7 +67,7 @@ services:
     networks:
       - dev-network
     healthcheck:
-      test: ["CMD-SHELL", "curl -s -f http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"]
+      test: ["CMD-SHELL", "curl -s -f http://elasticsearch-node:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"]
       interval: 10s
       timeout: 10s
       retries: 10
