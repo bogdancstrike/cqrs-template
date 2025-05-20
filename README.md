@@ -112,80 +112,8 @@ Sagas are a way to manage long-lived transactions or processes that span multipl
 
 The system ingests alert-generating messages from Kafka. These messages are transformed into commands, which are handled by the AlertAggregate. The aggregate validates the command and, if successful, emits domain events. These events are persisted in an Event Store (PostgreSQL) and also published (potentially via Kafka) to update a denormalized read model in Elasticsearch. This read model is then queried via a REST API.
 
-### **3.1. Diagram**
 
-@startuml  
-\!theme materia
-
-package "External Systems" {  
-  actor "Message Producer" as Producer  
-}
-
-package "Alert Management System (template.cqrs)" {  
-  package "Input Layer (Kafka)" {  
-    queue "alerts-input-topic" as KafkaInputTopic  
-  }
-
-  package "Application Core" {  
-    package "Command Side (Write Model)" {  
-      component "Kafka Consumer\\n(AlertInputKafkaConsumer)" as AppKafkaConsumer  
-      component "Command Gateway\\n(Axon)" as CommandGateway  
-      folder "Aggregates" {  
-        entity "AlertAggregate" as AlertAggregate  
-      }  
-      database "Event Store (PostgreSQL)\\n(domain\_event\_entry, token\_entry, etc.)" as EventStore  
-      queue "alerts-events-topic (Axon Events via Kafka)" as AxonKafkaEventsTopic  
-    }
-
-    package "Query Side (Read Model)" {  
-      component "Event Processors\\n(AlertProjection)" as EventProcessors  
-      database "Read Database (Elasticsearch)\\n(alerts index)" as ReadDB  
-      component "Query Handlers\\n(AlertQueryHandler)" as QueryHandlers  
-      component "REST API Controllers\\n(AlertCommandController, AlertQueryController)" as RestControllers  
-    }  
-  }  
-}
-
-package "Clients" {  
-  actor "API User / System" as ApiUser  
-}
-
-' Data Flows  
-Producer \--\> KafkaInputTopic : Publishes raw alert message  
-KafkaInputTopic \--\> AppKafkaConsumer : Consumes raw message  
-AppKafkaConsumer \--\> CommandGateway : Sends CreateAlertCommand
-
-CommandGateway \--\> AlertAggregate : Routes Command  
-AlertAggregate \--\> AlertAggregate : Validates, applies business rules  
-AlertAggregate \--\> EventStore : Persists AlertCreatedEvent, etc.  
-AlertAggregate \--\> AxonKafkaEventsTopic : Publishes AlertCreatedEvent, etc.
-
-AxonKafkaEventsTopic \--\> EventProcessors : Consumes Domain Event  
-EventProcessors \--\> ReadDB : Updates Alert Index
-
-ApiUser \--\> RestControllers : HTTP GET/POST/PUT/DELETE  
-RestControllers \--\> CommandGateway : (for Commands)  
-RestControllers \--\> QueryHandlers : (for Queries)  
-QueryHandlers \--\> ReadDB : Fetches data  
-ReadDB \--\> QueryHandlers : Returns query results  
-QueryHandlers \--\> RestControllers : Returns DTOs  
-RestControllers \--\> ApiUser : HTTP Response
-
-note right of EventStore  
-  Single source of truth.  
-  Stores all domain events.  
-end note
-
-note right of ReadDB  
-  Optimized for queries.  
-  Denormalized alert data.  
-  Eventually consistent.  
-end note  
-@enduml
-
-*(This diagram can be rendered using PlantUML.)*
-
-### **3.2. Components**
+### **3.1. Components**
 
 * **Kafka Input (alerts-input-topic):** Receives raw messages for alert creation.  
 * **AlertInputKafkaConsumer:** Consumes from Kafka, transforms messages to CreateAlertCommand.  
