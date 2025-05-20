@@ -143,6 +143,7 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 
 The project follows a single-module Maven structure with clear package separation:
 
+```code
 .  
 ├── ADRs/                             \# Architectural Decision Records  
 │   ├── adr-001.md  
@@ -210,6 +211,7 @@ The project follows a single-module Maven structure with clear package separatio
 │                       └── test\_alerts\_api.sh  
 └── target/                             \# Maven build output (not version controlled)  
     └── ...
+```
 
 ## **6\. Setup and Run**
 
