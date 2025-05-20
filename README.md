@@ -247,24 +247,36 @@ You can check the status of the containers: docker-compose psTo view logs: docke
 
 1. Using Maven from your terminal:  
    Navigate to the project's root directory (where pom.xml is) and run:  
-   mvn clean install
+```code
+mvn clean install
+```
 
    This will compile the code, run tests (if not skipped), and package the application into a JAR file in the target/ directory (e.g., target/cqrs-0.0.1-SNAPSHOT.jar).  
 2. Building the Docker Image (if using the multi-stage Dockerfile):  
    The multi-stage Dockerfile (ID: alert\_management\_app\_dockerfile) builds the JAR inside the Docker build process.  
    From the project root directory (containing the Dockerfile):  
-   docker build \-t template/cqrs-app .
+
+```code
+docker build \-t template/cqrs-app .
+```
 
    The docker-compose.yml also uses this Dockerfile to build the cqrs-template-app service.
 
 ### **6.4. Running the Application**
 
-1. **Directly via Java (after mvn clean install):**  
-   java \-jar target/cqrs-0.0.1-SNAPSHOT.jar
+1. **Directly via Java (after mvn clean install):**
+
+```code
+java \-jar target/cqrs-0.0.1-SNAPSHOT.jar
+```
 
    Ensure your application.properties points to localhost for PostgreSQL, Elasticsearch, and Kafka if they are running directly on your host or via Docker port mappings. Your application.properties (ID alert\_management\_app\_properties) uses localhost for Kafka and PostgreSQL, and 192.168.1.164:9200 for Elasticsearch. Adjust these if running services directly on host.  
 2. Via Docker Compose (Recommended for local development):  
-   The docker-compose up \-d command will build (if not already built) and run your application container (cqrs-template-app) along with all its dependencies. The application inside the container will use the service names defined in docker-compose.yml to connect (e.g., postgres-db, elasticsearch-node, kafka-broker). Your application will be accessible on http://localhost:7676.
+
+```code
+docker compose up -d
+```
+   The command will build (if not already built) and run your application container (cqrs-template-app) along with all its dependencies. The application inside the container will use the service names defined in docker-compose.yml to connect (e.g., postgres-db, elasticsearch-node, kafka-broker). Your application will be accessible on http://localhost:7676.
 
 ## **7\. Usage Examples**
 
@@ -274,6 +286,7 @@ Messages to trigger alert creation should be sent to the alerts-input-topic Kafk
 
 **Example Message Format (JSON):**
 
+```code
 {  
   "messageId": "msg-$(uuidgen)",  
   "sourceSystem": "SystemX",  
@@ -286,10 +299,14 @@ Messages to trigger alert creation should be sent to the alerts-input-topic Kafk
     "component": "AuthService"  
   }  
 }
+```
 
 How to send (using kafkacat or similar tool):  
 Assuming Kafka is running and accessible on localhost:9092 from your host:  
+
+```code
 echo '{ "messageId": "kfk-msg-'$(uuidgen)'", "sourceSystem": "KafkaProducerTool", "severity": "HIGH", "description": "Test alert via kafkacat.", "timestamp": "'$(date \-u \+"%Y-%m-%dT%H:%M:%SZ")'", "details": { "tool": "kafkacat", "user": "$USER" }}' | kafkacat \-P \-b localhost:9092 \-t alerts-input-topic
+```
 
 Check application logs for confirmation of message processing.
 
@@ -299,6 +316,7 @@ The application exposes REST endpoints on port 7676 (configurable).
 You can use the provided test\_alerts\_api.sh script (located in src/test/java/template/cqrs/docs/ as per your tree structure, or ID: api\_test\_script\_sh if referring to the Canvas version) for a sequence of API calls.  
 **Example: Create Alert via API**
 
+```code
 curl \-X POST http://localhost:7676/api/v1/alerts \\  
 \-H "Content-Type: application/json" \\  
 \-d '{  
@@ -309,12 +327,15 @@ curl \-X POST http://localhost:7676/api/v1/alerts \\
   "eventTimestamp": "'$(date \-u \+"%Y-%m-%dT%H:%M:%SZ")'",  
   "initiatedBy": "api-tester"  
 }'
+```
 
 The response will include the alertId of the newly created alert.
 
 **Example: Get Alert by ID** (replace {alertId} with an actual ID)
 
+```code
 curl \-X GET http://localhost:7676/api/v1/alerts/{alertId}
+```
 
 Refer to the AlertCommandController.java and AlertQueryController.java for all available endpoints and their request/response structures.
 
