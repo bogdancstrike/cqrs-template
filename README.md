@@ -139,83 +139,9 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 * **Containerization:** Docker, Docker Compose  
 * **Testing:** JUnit 5, Testcontainers, Mockito, REST Assured (for API contract tests \- not fully implemented in this template but recommended).
 
-## **5\. Project Structure**
+## **5\. Setup and Run**
 
-The project follows a single-module Maven structure with clear package separation:
-
-```code
-.  
-├── ADRs/                             \# Architectural Decision Records  
-│   ├── adr-001.md  
-│   ├── adr-002.md  
-│   ├── adr-003.md  
-│   ├── adr-004.md  
-│   └── adr-005.md  
-├── docker-compose.yml                \# For local development environment  
-├── Dockerfile                        \# For building the application Docker image  
-├── docs/                             \# General documentation  
-│   ├── domain-model-description.md  
-│   ├── non-functional-requirements-NFRs.md  
-│   └── read-model-synchronization-strategy.md  
-├── HELP.md                           \# Spring Boot generated help  
-├── mvnw                              \# Maven wrapper script (Linux/macOS)  
-├── mvnw.cmd                          \# Maven wrapper script (Windows)  
-├── pom.xml                           \# Maven project configuration  
-├── src/  
-│   ├── main/  
-│   │   ├── java/  
-│   │   │   └── template/  
-│   │   │       └── cqrs/  
-│   │   │           ├── Application.java           \# Main Spring Boot application  
-│   │   │           ├── command/  
-│   │   │           │   └── aggregate/  
-│   │   │           │       └── AlertAggregate.java  
-│   │   │           ├── config/  
-│   │   │           │   ├── ElasticsearchCustomConfig.java  
-│   │   │           │   └── JacksonConfig.java  
-│   │   │           ├── coreapi/                   \# Shared API: Commands, Events, Queries, common DTOs  
-│   │   │           │   ├── commands/              \# Command objects  
-│   │   │           │   ├── common/                \# Enums, common Value Objects  
-│   │   │           │   ├── dto/                   \# Data Transfer Objects for query responses  
-│   │   │           │   ├── events/                \# Event objects  
-│   │   │           │   └── queries/               \# Query objects  
-│   │   │           ├── infrastructure/  
-│   │   │           │   └── kafka/  
-│   │   │           │       ├── consumer/  
-│   │   │           │       │   └── AlertInputKafkaConsumer.java  
-│   │   │           │       └── dto/  
-│   │   │           │           └── IncomingAlertMessageDto.java  
-│   │   │           ├── query/  
-│   │   │           │   ├── document/  
-│   │   │           │   │   └── AlertDocument.java \# Elasticsearch document  
-│   │   │           │   ├── handler/  
-│   │   │           │   │   └── AlertQueryHandler.java  
-│   │   │           │   ├── projection/  
-│   │   │           │   │   └── AlertReadModel.java  
-│   │   │           │   └── repository/  
-│   │   │           │       └── AlertDocumentRepository.java  
-│   │   │           └── web/  
-│   │   │               ├── controller/  
-│   │   │               │   ├── AlertCommandController.java  
-│   │   │               │   └── AlertQueryController.java  
-│   │   │               └── dto/                   \# DTOs for web requests (e.g., CreateAlertRequestDto)  
-│   │   └── resources/  
-│   │       └── application.properties  
-│   └── test/  
-│       └── java/  
-│           └── template/  
-│               └── cqrs/  
-│                   ├── ApplicationTests.java      \# Basic Spring Boot context test  
-│                   └── docs/                      \# Test-related documentation/scripts  
-│                       ├── kafka-test.md  
-│                       └── test\_alerts\_api.sh  
-└── target/                             \# Maven build output (not version controlled)  
-    └── ...
-```
-
-## **6\. Setup and Run**
-
-### **6.1. Prerequisites**
+### **5.1. Prerequisites**
 
 * Java JDK 21 or higher  
 * Apache Maven 3.8.x or higher  
@@ -223,7 +149,7 @@ The project follows a single-module Maven structure with clear package separatio
 * Git  
 * jq (for the API test script \- sudo apt-get install jq or brew install jq)
 
-### **6.2. Local Setup with Docker Compose**
+### **5.2. Local Setup with Docker Compose**
 
 A docker-compose.yml file (ID: integrated\_docker\_compose\_yml) is provided in the project root to set up the required infrastructure: PostgreSQL, Elasticsearch 8.11.3, and Kafka.
 
@@ -241,7 +167,7 @@ A docker-compose.yml file (ID: integrated\_docker\_compose\_yml) is provided in 
    * Kafka on port 9092 (service name kafka-broker)  
    * Kafka UI on port 8090 (service name kafka-ui)
 
-### **6.3. Building the Application**
+### **5.3. Building the Application**
 
 1. Using Maven from your terminal:  
    Navigate to the project's root directory (where pom.xml is) and run:  
@@ -260,7 +186,7 @@ docker build -t template/cqrs-app .
 
    The docker-compose.yml also uses this Dockerfile to build the cqrs-template-app service.
 
-### **6.4. Running the Application**
+### **5.4. Running the Application**
 
 1. **Directly via Java (after mvn clean install):**
 
@@ -276,9 +202,9 @@ docker compose up -d
 ```
    The command will build (if not already built) and run your application container (cqrs-template-app) along with all its dependencies. The application inside the container will use the service names defined in docker-compose.yml to connect (e.g., postgres-db, elasticsearch-node, kafka-broker). Your application will be accessible on http://localhost:7676.
 
-## **7\. Usage Examples**
+## **6. Usage Examples**
 
-### **7.1. Producing an Input Message to Kafka**
+### **6.1. Producing an Input Message to Kafka**
 
 Messages to trigger alert creation should be sent to the alerts-input-topic Kafka topic.
 
@@ -308,7 +234,7 @@ echo '{ "messageId": "kfk-msg-'$(uuidgen)'", "sourceSystem": "KafkaProducerTool"
 
 Check application logs for confirmation of message processing.
 
-### **7.2. Interacting via REST API**
+### **6.2. Interacting via REST API**
 
 The application exposes REST endpoints on port 7676 (configurable).  
 You can use the provided test\_alerts\_api.sh script (located in src/test/java/template/cqrs/docs/ as per your tree structure, or ID: api\_test\_script\_sh if referring to the Canvas version) for a sequence of API calls.  
@@ -337,7 +263,7 @@ curl \-X GET http://localhost:7676/api/v1/alerts/{alertId}
 
 Refer to the AlertCommandController.java and AlertQueryController.java for all available endpoints and their request/response structures.
 
-## **8\. API Documentation (Swagger/OpenAPI)**
+## **7. API Documentation (Swagger/OpenAPI)**
 
 Once the application is running, API documentation is available via Swagger UI:
 
