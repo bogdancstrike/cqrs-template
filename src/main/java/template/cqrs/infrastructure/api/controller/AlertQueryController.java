@@ -19,8 +19,8 @@ import template.cqrs.application.query.alert.FindAlertsByStatusQuery;
 import template.cqrs.application.query.alert.FindAlertsByTimestampRangeQuery;
 import template.cqrs.application.query.alert.FindAllAlertsQuery;
 import template.cqrs.domain.model.alert.value_objects.AlertStatus;
-import template.cqrs.shared.dto.alert.AlertDto;
-import template.cqrs.shared.dto.alert.PagedAlertResponse;
+import template.cqrs.domain.model.alert.dto.AlertDto;
+import template.cqrs.domain.model.alert.dto.PagedAlertResponse;
 
 import java.time.Instant;
 import java.util.UUID;

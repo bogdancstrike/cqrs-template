@@ -12,8 +12,8 @@ import template.cqrs.application.query.alert.FindAlertsByKeywordQuery;
 import template.cqrs.application.query.alert.FindAlertsByStatusQuery;
 import template.cqrs.application.query.alert.FindAlertsByTimestampRangeQuery;
 import template.cqrs.application.query.alert.FindAllAlertsQuery;
-import template.cqrs.shared.dto.alert.AlertDto;
-import template.cqrs.shared.dto.alert.PagedAlertResponse;
+import template.cqrs.domain.model.alert.dto.AlertDto;
+import template.cqrs.domain.model.alert.dto.PagedAlertResponse;
 import template.cqrs.read_model.elasticsearch.document.AlertDocument;
 import template.cqrs.read_model.elasticsearch.repository.AlertDocumentRepository;
 

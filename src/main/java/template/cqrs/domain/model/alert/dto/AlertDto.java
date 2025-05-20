@@ -1,4 +1,4 @@
-package template.cqrs.shared.dto.alert;
+package template.cqrs.domain.model.alert.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
