@@ -121,7 +121,7 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 * **AlertAggregate:** Core domain logic, handles commands, emits events.  
 * **Event Store (PostgreSQL):** Persists domain events using Axon's JPA entities. Also stores tracking tokens for event processors.  
 * **Axon Events Kafka Topic (alerts-events-topic):** (Optional, configurable) Axon can publish domain events here for inter-component communication.  
-* **AlertProjection:** Event handling component (Tracking Event Processor) that consumes domain events and updates the Elasticsearch read model.  
+* **AlertReadModel:** Event handling component (Tracking Event Processor) that consumes domain events and updates the Elasticsearch read model.  
 * **Elasticsearch Read Model (alerts index):** Stores denormalized alert data for querying.  
 * **AlertQueryHandler:** Handles query messages, fetches data from Elasticsearch.  
 * **REST Controllers (AlertCommandController, AlertQueryController):** Expose HTTP endpoints for commands and queries.
@@ -191,7 +191,7 @@ The project follows a single-module Maven structure with clear package separatio
 │   │   │           │   ├── handler/  
 │   │   │           │   │   └── AlertQueryHandler.java  
 │   │   │           │   ├── projection/  
-│   │   │           │   │   └── AlertProjection.java  
+│   │   │           │   │   └── AlertReadModel.java  
 │   │   │           │   └── repository/  
 │   │   │           │       └── AlertDocumentRepository.java  
 │   │   │           └── web/  
@@ -344,4 +344,4 @@ Once the application is running, API documentation is available via Swagger UI:
 * **Swagger UI:** [http://localhost:7676/swagger-ui.html](http://localhost:7676/swagger-ui.html)  
 * **OpenAPI Spec (JSON):** [http://localhost:7676/api-docs](http://localhost:7676/api-docs)
 
-(Ensure springdoc.packagesToScan=template.cqrs.web.controller or springdoc.packagesToScan=template.cqrs in application.properties correctly points to your controller package or a base package that includes it.)
+(Ensure springdoc.packagesToScan=template.cqrs.api.controller or springdoc.packagesToScan=template.cqrs in application.properties correctly points to your controller package or a base package that includes it.)

@@ -8,8 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.Value;
-import template.cqrs.coreapi.common.AlertSeverity;
+import template.cqrs.core.value_objects.AlertSeverity;
 
 import java.time.Instant;
 import java.util.Map;

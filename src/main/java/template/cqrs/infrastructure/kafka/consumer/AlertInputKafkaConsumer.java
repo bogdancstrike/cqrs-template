@@ -11,8 +11,8 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import template.cqrs.coreapi.commands.CreateAlertCommand;
-import template.cqrs.coreapi.common.AlertDetails;
+import template.cqrs.core.aggregate.commands.CreateAlertCommand;
+import template.cqrs.core.value_objects.AlertDetails;
 import template.cqrs.infrastructure.kafka.dto.IncomingAlertMessageDto;
 
 import java.util.Set;

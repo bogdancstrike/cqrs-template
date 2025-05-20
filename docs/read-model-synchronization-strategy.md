@@ -12,7 +12,7 @@ The system employs a CQRS architecture where the read model is updated asynchron
 \* \*\*Event Bus (Axon, potentially via Kafka):\*\* Distributes domain events after they are persisted.  
 \* \*\*Tracking Event Processor (TEP \- Axon):\*\* A type of event processor that actively pulls events from the event store (or a stream like Kafka if configured as the source for the TEP). TEPs maintain a "tracking token" to keep track of their progress.  
     \* \*\*Token Store (JPA/PostgreSQL):\*\* Stores the tracking tokens for TEPs, allowing them to resume from where they left off after a restart or failure.  
-\* \*\*Alert Projector (\`AlertProjection\` class):\*\* An event handling component containing \`@EventHandler\` methods. This component is managed by a TEP. It consumes domain events (e.g., \`AlertCreatedEvent\`, \`AlertUpdatedEvent\`) and updates the Elasticsearch read model.  
+\* \*\*Alert Projector (\`AlertReadModel\` class):\*\* An event handling component containing \`@EventHandler\` methods. This component is managed by a TEP. It consumes domain events (e.g., \`AlertCreatedEvent\`, \`AlertUpdatedEvent\`) and updates the Elasticsearch read model.  
 \* \*\*Elasticsearch Client/Repository:\*\* Used by the \`AlertProjector\` to interact with the Elasticsearch index.  
 \* \*\*Elasticsearch Index (\`alerts\`):\*\* The denormalized data store for alerts, optimized for querying.
 
