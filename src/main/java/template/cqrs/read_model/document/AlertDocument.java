@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
-import template.cqrs.core.value_objects.AlertDetails;
-import template.cqrs.core.value_objects.AlertNoteDto;
-import template.cqrs.core.value_objects.AlertSeverity;
-import template.cqrs.core.value_objects.AlertStatus;
+import template.cqrs.domain.alert.value_objects.AlertDetails;
+import template.cqrs.domain.alert.value_objects.AlertNoteDto;
+import template.cqrs.domain.alert.value_objects.AlertSeverity;
+import template.cqrs.domain.alert.value_objects.AlertStatus;
 
 import java.time.Instant;
 import java.util.List;

@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
-import template.cqrs.core.value_objects.AlertSeverity;
-import template.cqrs.core.value_objects.AlertStatus;
+import template.cqrs.domain.alert.value_objects.AlertSeverity;
+import template.cqrs.domain.alert.value_objects.AlertStatus;
 import template.cqrs.read_model.document.AlertDocument;
 
 import java.time.Instant;

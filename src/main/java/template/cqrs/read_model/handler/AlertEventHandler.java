@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import template.cqrs.core.aggregate.events.*;
-import template.cqrs.core.value_objects.AlertNoteDto;
+import template.cqrs.domain.alert.aggregate.events.*;
+import template.cqrs.domain.alert.value_objects.AlertNoteDto;
 import template.cqrs.read_model.document.AlertDocument;
 import template.cqrs.read_model.repository.AlertDocumentRepository;
 

@@ -8,9 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import template.cqrs.core.dto.AlertDto;
-import template.cqrs.core.dto.PagedAlertResponse;
-import template.cqrs.core.queries.*;
+import template.cqrs.domain.alert.dto.AlertDto;
+import template.cqrs.domain.alert.dto.PagedAlertResponse;
+import template.cqrs.domain.alert.queries.*;
 import template.cqrs.read_model.document.AlertDocument;
 import template.cqrs.read_model.repository.AlertDocumentRepository;
 
