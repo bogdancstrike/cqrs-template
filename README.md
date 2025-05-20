@@ -233,15 +233,13 @@ A docker-compose.yml file (ID: integrated\_docker\_compose\_yml) is provided in 
 
 2. Start infrastructure using Docker Compose:  
    From the project root directory (containing docker-compose.yml):  
-   docker-compose up \-d
+   docker-compose up -d
 
    This will start:  
    * PostgreSQL on port 5432 (service name postgres-db)  
    * Elasticsearch on port 9200 (service name elasticsearch-node)  
    * Kafka on port 9092 (service name kafka-broker)  
    * Kafka UI on port 8090 (service name kafka-ui)
-
-You can check the status of the containers: docker-compose psTo view logs: docker-compose logs \-f \<service-name\> (e.g., docker-compose logs \-f cqrs-template-app)To stop and remove containers: docker-compose down (add \-v to remove volumes: docker-compose down \-v)
 
 ### **6.3. Building the Application**
 
@@ -257,7 +255,7 @@ mvn clean install
    From the project root directory (containing the Dockerfile):  
 
 ```code
-docker build \-t template/cqrs-app .
+docker build -t template/cqrs-app .
 ```
 
    The docker-compose.yml also uses this Dockerfile to build the cqrs-template-app service.
@@ -267,7 +265,7 @@ docker build \-t template/cqrs-app .
 1. **Directly via Java (after mvn clean install):**
 
 ```code
-java \-jar target/cqrs-0.0.1-SNAPSHOT.jar
+java -jar target/cqrs-0.0.1-SNAPSHOT.jar
 ```
 
    Ensure your application.properties points to localhost for PostgreSQL, Elasticsearch, and Kafka if they are running directly on your host or via Docker port mappings. Your application.properties (ID alert\_management\_app\_properties) uses localhost for Kafka and PostgreSQL, and 192.168.1.164:9200 for Elasticsearch. Adjust these if running services directly on host.  
