@@ -10,11 +10,7 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.springframework.util.Assert; // Spring's Assert for preconditions
-import template.cqrs.domain.aggregate.commands.*;
-import template.cqrs.domain.aggregate.events.*;
-import template.cqrs.domain.alert.aggregate.commands.*;
-import template.cqrs.domain.alert.aggregate.events.*;
+import org.springframework.util.Assert;
 import template.cqrs.domain.model.alert.commands.*;
 import template.cqrs.domain.model.alert.events.*;
 import template.cqrs.domain.model.alert.value_objects.AlertDetails;

@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import template.cqrs.domain.model.alert.commands.*;
 import template.cqrs.domain.model.alert.value_objects.AlertDetails;
-import template.cqrs.api.dto.*;
 import template.cqrs.infrastructure.api.dto.*;
-import template.cqrs.infrastructure.kafka.api.dto.*;
 
 import java.net.URI;
 import java.util.Map;
