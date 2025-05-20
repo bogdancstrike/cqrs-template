@@ -31,7 +31,7 @@ The primary goal is to provide a well-structured, scalable, and maintainable fou
 11. [Business Documentation](#bookmark=id.apcad7ra2gr)  
 12. [Configuration](#bookmark=id.n1js8njqtbft)
 
-## **1\. Purpose of the Project**
+## **1. Purpose of the Project**
 
 This template aims to:
 
@@ -44,7 +44,7 @@ This template aims to:
 
 The domain chosen for this template is a simple **Alert Management System**, which involves creating, updating, and querying alerts based on various inputs and criteria.
 
-## **2\. Core Architectural Concepts**
+## **2. Core Architectural Concepts**
 
 This project is built upon several key architectural patterns and principles:
 
@@ -108,7 +108,7 @@ Sagas are a way to manage long-lived transactions or processes that span multipl
 
 **While this template does not explicitly implement a Saga, it's an important pattern in event-driven architectures that often complements CQRS and Event Sourcing when dealing with complex business processes.**
 
-## **3\. System Architecture Overview**
+## **3. System Architecture Overview**
 
 The system ingests alert-generating messages from Kafka. These messages are transformed into commands, which are handled by the AlertAggregate. The aggregate validates the command and, if successful, emits domain events. These events are persisted in an Event Store (PostgreSQL) and also published (potentially via Kafka) to update a denormalized read model in Elasticsearch. This read model is then queried via a REST API.
 
@@ -126,7 +126,7 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 * **AlertQueryHandler:** Handles query messages, fetches data from Elasticsearch.  
 * **REST Controllers (AlertCommandController, AlertQueryController):** Expose HTTP endpoints for commands and queries.
 
-## **4\. Technology Stack**
+## **4. Technology Stack**
 
 * **Backend Framework:** Spring Boot 3.2.5  
 * **Event Framework:** Axon Framework 4.9.3  
@@ -137,9 +137,9 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 * **Build Tool:** Apache Maven 3.8.7  
 * **API Documentation:** SpringDoc OpenAPI (Swagger UI)  
 * **Containerization:** Docker, Docker Compose  
-* **Testing:** JUnit 5, Testcontainers, Mockito, REST Assured (for API contract tests \- not fully implemented in this template but recommended).
+* **Testing:** JUnit 5, Testcontainers, Mockito, REST Assured (for API contract tests - not fully implemented in this template but recommended).
 
-## **5\. Setup and Run**
+## **5. Setup and Run**
 
 ### **5.1. Prerequisites**
 
@@ -147,15 +147,15 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 * Apache Maven 3.8.x or higher  
 * Docker and Docker Compose  
 * Git  
-* jq (for the API test script \- sudo apt-get install jq or brew install jq)
+* jq (for the API test script - sudo apt-get install jq or brew install jq)
 
 ### **5.2. Local Setup with Docker Compose**
 
-A docker-compose.yml file (ID: integrated\_docker\_compose\_yml) is provided in the project root to set up the required infrastructure: PostgreSQL, Elasticsearch 8.11.3, and Kafka.
+A docker-compose.yml file (ID: integrated_docker_compose_yml) is provided in the project root to set up the required infrastructure: PostgreSQL, Elasticsearch 8.11.3, and Kafka.
 
 1. **Clone the repository:**  
-   git clone \<repository-url\>  
-   cd cqrs-template \# Or your project's root directory
+   git clone <repository-url>  
+   cd cqrs-template # Or your project's root directory
 
 2. Start infrastructure using Docker Compose:  
    From the project root directory (containing docker-compose.yml):  
@@ -177,7 +177,7 @@ mvn clean install
 
    This will compile the code, run tests (if not skipped), and package the application into a JAR file in the target/ directory (e.g., target/cqrs-0.0.1-SNAPSHOT.jar).  
 2. Building the Docker Image (if using the multi-stage Dockerfile):  
-   The multi-stage Dockerfile (ID: alert\_management\_app\_dockerfile) builds the JAR inside the Docker build process.  
+   The multi-stage Dockerfile (ID: alert_management_app_dockerfile) builds the JAR inside the Docker build process.  
    From the project root directory (containing the Dockerfile):  
 
 ```code
@@ -194,7 +194,7 @@ docker build -t template/cqrs-app .
 java -jar target/cqrs-0.0.1-SNAPSHOT.jar
 ```
 
-   Ensure your application.properties points to localhost for PostgreSQL, Elasticsearch, and Kafka if they are running directly on your host or via Docker port mappings. Your application.properties (ID alert\_management\_app\_properties) uses localhost for Kafka and PostgreSQL, and 192.168.1.164:9200 for Elasticsearch. Adjust these if running services directly on host.  
+   Ensure your application.properties points to localhost for PostgreSQL, Elasticsearch, and Kafka if they are running directly on your host or via Docker port mappings. Your application.properties (ID alert_management_app_properties) uses localhost for Kafka and PostgreSQL, and 192.168.1.164:9200 for Elasticsearch. Adjust these if running services directly on host.  
 2. Via Docker Compose (Recommended for local development):  
 
 ```code
@@ -216,7 +216,7 @@ Messages to trigger alert creation should be sent to the alerts-input-topic Kafk
   "sourceSystem": "SystemX",  
   "severity": "CRITICAL",  
   "description": "Critical system failure detected in module Alpha.",  
-  "timestamp": "$(date \-u \+"%Y-%m-%dT%H:%M:%SZ")",  
+  "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",  
   "details": {  
     "host": "server-alpha-01",  
     "errorCode": "X500",  
@@ -229,7 +229,7 @@ How to send (using kafkacat or similar tool):
 Assuming Kafka is running and accessible on localhost:9092 from your host:  
 
 ```code
-echo '{ "messageId": "kfk-msg-'$(uuidgen)'", "sourceSystem": "KafkaProducerTool", "severity": "HIGH", "description": "Test alert via kafkacat.", "timestamp": "'$(date \-u \+"%Y-%m-%dT%H:%M:%SZ")'", "details": { "tool": "kafkacat", "user": "$USER" }}' | kafkacat \-P \-b localhost:9092 \-t alerts-input-topic
+echo '{ "messageId": "kfk-msg-'$(uuidgen)'", "sourceSystem": "KafkaProducerTool", "severity": "HIGH", "description": "Test alert via kafkacat.", "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'", "details": { "tool": "kafkacat", "user": "$USER" }}' | kafkacat -P -b localhost:9092 -t alerts-input-topic
 ```
 
 Check application logs for confirmation of message processing.
@@ -237,18 +237,18 @@ Check application logs for confirmation of message processing.
 ### **6.2. Interacting via REST API**
 
 The application exposes REST endpoints on port 7676 (configurable).  
-You can use the provided test\_alerts\_api.sh script (located in src/test/java/template/cqrs/docs/ as per your tree structure, or ID: api\_test\_script\_sh if referring to the Canvas version) for a sequence of API calls.  
+You can use the provided test_alerts_api.sh script (located in src/test/java/template/cqrs/docs/ as per your tree structure, or ID: api_test_script_sh if referring to the Canvas version) for a sequence of API calls.  
 **Example: Create Alert via API**
 
 ```code
-curl \-X POST http://localhost:7676/api/v1/alerts \\  
-\-H "Content-Type: application/json" \\  
-\-d '{  
+curl -X POST http://localhost:7676/api/v1/alerts \
+-H "Content-Type: application/json" \
+-d '{  
   "severity": "MEDIUM",  
   "description": "API Test: User login anomaly.",  
   "source": "APITestClient",  
-  "details": {"ip\_address": "192.168.1.100", "attempts": 5},  
-  "eventTimestamp": "'$(date \-u \+"%Y-%m-%dT%H:%M:%SZ")'",  
+  "details": {"ip_address": "192.168.1.100", "attempts": 5},  
+  "eventTimestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",  
   "initiatedBy": "api-tester"  
 }'
 ```
@@ -258,7 +258,7 @@ The response will include the alertId of the newly created alert.
 **Example: Get Alert by ID** (replace {alertId} with an actual ID)
 
 ```code
-curl \-X GET http://localhost:7676/api/v1/alerts/{alertId}
+curl -X GET http://localhost:7676/api/v1/alerts/{alertId}
 ```
 
 Refer to the AlertCommandController.java and AlertQueryController.java for all available endpoints and their request/response structures.
