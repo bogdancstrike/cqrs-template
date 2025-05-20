@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # Your Spring Boot Application
+  cqrs-template-app: # Matches spring.application.name
+    build:
+      context: . # Assumes Dockerfile is in the same directory (root of your app module)
+      dockerfile: Dockerfile # Refers to the Dockerfile in the Canvas
+      args:
+        JAR_FILE: target/cqrs-0.0.1-SNAPSHOT.jar # Adjust if your JAR name differs
+    container_name: cqrs-template-app
+    ports:
+      - "7676:7676" # Host:Container (matches your app's server.port)
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker # Optional: for docker-specific configurations
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/dev
+      - SPRING_DATASOURCE_USERNAME=dev
+      - SPRING_DATASOURCE_PASSWORD=dev
+      - SPRING_ELASTICSEARCH_URIS=http://elasticsearch-node:9200 # Use service name
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka-broker:29092 # Connect to Kafka's internal listener
+      - APP_KAFKA_TOPIC_ALERTS_INPUT=alerts-input-topic
+      - APP_KAFKA_TOPIC_ALERTS_EVENTS=alerts-events-topic
+      - AXON_KAFKA_DEFAULT_TOPIC=alerts-events-topic
+      # Ensure your application.properties uses these service names if not overridden here
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      elasticsearch-node:
+        condition: service_healthy
+      kafka-broker:
+        condition: service_started # Kafka healthcheck can be more involved with KRaft
+    networks:
+      - dev-network
+
+  # PostgreSQL (Event Store)
+  postgres-db:
+    image: postgres:16
+    container_name: dev-postgres
+    environment:
+      - POSTGRES_DB=dev
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Elasticsearch (Read Model)
+  elasticsearch-node:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.3
+    container_name: elasticsearch-8
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  # Kafka (Bitnami Image with KRaft)
+  kafka-broker:
+    image: bitnami/kafka:latest # Consider pinning a specific version for stability
+    container_name: kafka
+    ports:
+      - "9092:9092" # External port for host access
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-broker:9093 # Use service name for quorum
+      # Listeners
+      - KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka-broker:29092,EXTERNAL://localhost:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      # Other settings from your example
+      - KAFKA_CFG_LOG_DIRS=/bitnami/kafka/data
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    volumes:
+      - kafka_data:/bitnami/kafka
+    networks:
+      - dev-network
+    # Note: A robust healthcheck for KRaft Kafka can be more complex than a simple topic list.
+    # For now, relying on service_started for depends_on.
+
+  # Kafka UI
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8090:8080" # Mapping internal 8080 to host 8090 to avoid common conflicts
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-docker-kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker:29092 # Connect to Kafka's internal listener
+    depends_on:
+      - kafka-broker
+    networks:
+      - dev-network
+
+volumes:
+  pgdata:
+  esdata:
+  kafka_data:
+
+networks:
+  dev-network:
+    driver: bridge
