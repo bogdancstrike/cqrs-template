@@ -151,26 +151,13 @@ The system ingests alert-generating messages from Kafka. These messages are tran
 
 ### **5.2. Local Setup with Docker Compose**
 
-A docker-compose.yml file (ID: integrated_docker_compose_yml) is provided in the project root to set up the required infrastructure: PostgreSQL, Elasticsearch 8.11.3, and Kafka.
-
-1. **Clone the repository:**  
-   git clone <repository-url>  
-   cd cqrs-template # Or your project's root directory
-
-2. Start infrastructure using Docker Compose:  
-   From the project root directory (containing docker-compose.yml):  
-   docker-compose up -d
-
-   This will start:  
-   * PostgreSQL on port 5432 (service name postgres-db)  
-   * Elasticsearch on port 9200 (service name elasticsearch-node)  
-   * Kafka on port 9092 (service name kafka-broker)  
-   * Kafka UI on port 8090 (service name kafka-ui)
+A docker-compose.yml file is provided in the project root to set up the required infrastructure: PostgreSQL, Elasticsearch and Kafka.
 
 ### **5.3. Building the Application**
 
 1. Using Maven from your terminal:  
-   Navigate to the project's root directory (where pom.xml is) and run:  
+   Navigate to the project's root directory (where pom.xml is) and run:
+   
 ```code
 mvn clean install
 ```
